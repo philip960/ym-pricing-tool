@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Y&amp;M - Pricing Tool</title>
+
+  <!-- iOS Home Screen App -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Y&amp;M Pricing">
+  <meta name="theme-color" content="#1a1815">
+  <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIGZpbGw9IiMxYTE4MTUiLz48dGV4dCB4PSI1MCUiIHk9IjQ2JSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2Q0YWY1NSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsIHNlcmlmIiBmb250LXNpemU9IjQ4IiBmb250LXdlaWdodD0iNDAwIj5ZJmFtcDtNPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNzQlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZDRhZjU1IiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGxldHRlci1zcGFjaW5nPSI0Ij5FVTwvdGV4dD48L3N2Zz4=">
+
+  <!-- Inter for everything you read; Cormorant Garamond only for the large prices. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #1a1815;
+      --gold: #d4af55;
+      --gold-deep: #c9a44a;
+      --text: #f5f1e8;
+      --text-2: rgba(245,241,232,0.80);
+      --text-3: rgba(245,241,232,0.68);
+      --hair: rgba(245,241,232,0.10);
+      --gold-line: rgba(212,175,85,0.30);
+      --green: #62c76e;
+      --amber: #ffc107;
+      --ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --display: 'Cormorant Garamond', 'Times New Roman', Times, serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { background: var(--bg); }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #1a1815 0%, #2d2820 50%, #1a1815 100%);
+      font-family: var(--ui);
+      font-size: 15px;
+      line-height: 1.45;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    /* Solid strip behind the iPhone status bar when used as a home-screen app. */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: env(safe-area-inset-top, 0px);
+      background: var(--bg);
+      z-index: 20;
+    }
+
+    button, input { font-family: inherit; }
+    button { touch-action: manipulation; }
+
+    /* Large prices: the brand serif, with lining figures so every digit sits on the line. */
+    .display {
+      font-family: var(--display);
+      font-weight: 500;
+      font-variant-numeric: lining-nums;
+      font-feature-settings: "lnum" 1;
+      line-height: 1;
+    }
+
+    header {
+      background: linear-gradient(180deg, rgba(212,175,85,0.15) 0%, transparent 100%);
+      padding: 16px 0 14px;
+      padding-top: calc(16px + env(safe-area-inset-top, 0px));
+    }
+
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .logo-container { display: flex; align-items: center; gap: 16px; }
+    .logo-container svg { height: 50px; width: auto; }
+
+    .subtitle {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    /* Always in reach: the tabs and the one button. */
+    .sticky-bar {
+      position: sticky;
+      top: env(safe-area-inset-top, 0px);
+      z-index: 10;
+      background: rgba(26,24,21,0.94);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid var(--gold-line);
+      border-bottom: 1px solid var(--gold-line);
+    }
+
+    .sticky-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: rgba(0,0,0,0.35);
+      padding: 4px;
+      border-radius: 10px;
+    }
+
+    .tab-btn {
+      flex: 1 1 auto;
+      min-height: 38px;
+      padding: 8px 10px;
+      background: transparent;
+      border: none;
+      border-radius: 7px;
+      color: var(--text-2);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+      color: var(--bg);
+      font-weight: 600;
+    }
+
+    .listing-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 11px 14px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--gold-line);
+      border-radius: 12px;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .listing-toggle.on {
+      background: linear-gradient(135deg, rgba(212,175,85,0.26) 0%, rgba(212,175,85,0.08) 100%);
+      border-color: var(--gold);
+    }
+
+    .listing-toggle:focus-visible, .tab-btn:focus-visible, .price-card:focus-visible,
+    .btn-option:focus-visible, .step-btn:focus-visible, .action-btn:focus-visible, .link-btn:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    .switch {
+      display: block;
+      flex-shrink: 0;
+      position: relative;
+      width: 52px;
+      height: 30px;
+      border-radius: 15px;
+      background: rgba(245,241,232,0.12);
+      border: 1px solid rgba(212,175,85,0.45);
+      transition: background 0.2s ease;
+    }
+
+    .switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(245,241,232,0.8);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .listing-toggle.on .switch { background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%); }
+    .listing-toggle.on .switch::after { transform: translateX(22px); background: var(--bg); }
+
+    .toggle-text { display: block; flex: 1; min-width: 0; }
+    .toggle-title { display: block; font-size: 14px; font-weight: 600; }
+    .toggle-sub { display: block; margin-top: 2px; font-size: 13px; color: var(--text-2); }
+    .toggle-inline-price { color: var(--gold); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    main { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+
+    .panel {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(212,175,85,0.2);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .section-title.spaced { margin-top: 28px; }
+
+    /* Offer: the two prices side by side. Tap one to choose it. */
+    .price-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .price-card {
+      position: relative;
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(212,175,85,0.2);
+      border-radius: 14px;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .price-card.active {
+      background: linear-gradient(135deg, rgba(212,175,85,0.24) 0%, rgba(212,175,85,0.07) 100%);
+      border-color: var(--gold);
+      box-shadow: inset 0 0 0 1px var(--gold);
+    }
+
+    .pc-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-2);
+    }
+
+    .pc-value { display: block; margin: 10px 0 8px; font-size: 40px; color: rgba(212,175,85,0.62); }
+    .price-card.active .pc-value { color: var(--gold); }
+    .pc-sub { display: block; font-size: 13px; color: var(--text-2); }
+
+    .pc-check {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+      color: var(--bg);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 20px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .price-card.active .pc-check { opacity: 1; }
+
+    .saving-line { margin: 14px 2px 0; font-size: 14px; color: var(--text-2); }
+
+    .form-group { margin-bottom: 18px; }
+
+    label, .field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      margin-bottom: 8px;
+    }
+
+    input.num {
+      width: 100%;
+      height: 50px;
+      padding: 0 14px;
+      background: rgba(245,241,232,0.06);
+      border: 1px solid rgba(212,175,85,0.35);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input.num:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,85,0.18); }
+
+    .money-input { position: relative; }
+
+    .money-input .prefix {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gold);
+      font-size: 18px;
+      font-weight: 500;
+      pointer-events: none;
+    }
+
+    .money-input input.num { padding-left: 34px; }
+
+    .btn-group { display: flex; gap: 10px; }
+
+    .btn-option {
+      flex: 1;
+      min-height: 48px;
+      padding: 10px;
+      background: rgba(245,241,232,0.06);
+      border: 1px solid rgba(212,175,85,0.35);
+      border-radius: 10px;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .btn-option.active {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+      border-color: var(--gold);
+      color: var(--bg);
+      font-weight: 600;
+    }
+
+    .stepper { display: flex; align-items: center; gap: 10px; }
+    .stepper input.num { text-align: center; font-size: 20px; }
+
+    .step-btn {
+      width: 54px;
+      height: 50px;
+      flex-shrink: 0;
+      background: rgba(245,241,232,0.06);
+      border: 1px solid rgba(212,175,85,0.35);
+      border-radius: 10px;
+      color: var(--gold);
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .step-btn:active { background: rgba(212,175,85,0.2); }
+
+    .note { margin-top: 12px; font-size: 14px; line-height: 1.5; color: var(--text-3); }
+
+    .link-btn {
+      margin-top: 10px;
+      padding: 6px 0;
+      background: none;
+      border: none;
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+    }
+
+    .line {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--hair);
+      font-size: 15px;
+      color: var(--text-2);
+    }
+
+    .line strong {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .line.credit strong { color: var(--green); }
+    .line.muted strong { color: var(--text-3); }
+
+    .line.total {
+      border-bottom: none;
+      padding: 16px 0 0;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .line.total strong { font-size: 34px; color: var(--gold); }
+
+    .action-btn {
+      width: 100%;
+      min-height: 50px;
+      margin-top: 20px;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+      border: none;
+      border-radius: 10px;
+      color: var(--bg);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    .action-btn:active { transform: translateY(1px); }
+
+    /* Menu price: question, answer, your choice, verdict. */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas: "ask rec" "yours status" "pour pour";
+      gap: 18px 24px;
+      align-items: end;
+    }
+
+    .menu-grid > * { margin: 0; }
+    .area-ask { grid-area: ask; }
+    .area-rec { grid-area: rec; }
+    .area-yours { grid-area: yours; }
+    .area-status { grid-area: status; }
+    .area-pour { grid-area: pour; }
+
+    .result-box {
+      background: linear-gradient(135deg, rgba(212,175,85,0.16) 0%, rgba(212,175,85,0.05) 100%);
+      border: 1px solid var(--gold-line);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+
+    .result-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      margin-bottom: 6px;
+    }
+
+    .result-value { font-size: 36px; color: var(--gold); }
+    .result-detail { font-size: 14px; color: var(--text-2); margin-top: 6px; }
+
+    .status-box { border-radius: 12px; padding: 13px 14px; display: flex; align-items: center; gap: 12px; }
+    .status-box.ok { background: rgba(98,199,110,0.10); border: 1px solid rgba(98,199,110,0.35); }
+    .status-box.warn { background: rgba(255,193,7,0.10); border: 1px solid rgba(255,193,7,0.35); }
+
+    .status-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .status-box.ok .status-dot { background: var(--green); }
+    .status-box.warn .status-dot { background: var(--amber); }
+
+    .status-title { font-size: 15px; font-weight: 600; }
+    .status-box.ok .status-title { color: var(--green); }
+    .status-box.warn .status-title { color: var(--amber); }
+    .status-detail { font-size: 13px; color: var(--text-2); }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+    .tier-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(212,175,85,0.2);
+      border-radius: 14px;
+      padding: 14px 16px;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .tier-card.active { border-color: var(--gold); background: rgba(212,175,85,0.12); }
+
+    .tier-name {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 3px;
+    }
+
+    .tier-range { font-size: 14px; color: var(--text); }
+    .tier-uplift { font-size: 30px; color: var(--gold); white-space: nowrap; }
+
+    .rules-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+    .rule-card {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(212,175,85,0.2);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .rule-number {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+      color: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .rule-text { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+    .rule-detail { font-size: 14px; color: var(--text-2); }
+
+    /* Margin: the verdict first, then the working. */
+    .delta-box { border-radius: 16px; padding: 20px 24px; margin-bottom: 20px; }
+    .delta-box.positive { background: rgba(98,199,110,0.10); border: 1px solid rgba(98,199,110,0.35); }
+    .delta-box.negative { background: rgba(255,193,7,0.08); border: 1px solid rgba(255,193,7,0.35); }
+
+    .delta-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .delta-box.positive .delta-title { color: var(--green); }
+    .delta-box.negative .delta-title { color: var(--amber); }
+
+    .delta-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .delta-label { font-size: 13px; color: var(--text-2); margin-bottom: 6px; }
+    .delta-value { font-size: 38px; }
+    .delta-box.positive .delta-value { color: var(--green); }
+    .delta-box.negative .delta-value { color: var(--amber); }
+    .delta-summary { margin-top: 14px; font-size: 14px; line-height: 1.5; color: var(--text-2); }
+
+    .compare { display: grid; grid-template-columns: minmax(0, 1fr) 84px 84px; margin-top: 4px; }
+
+    .compare > div {
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding: 12px 0 12px 10px;
+      border-bottom: 1px solid var(--hair);
+      font-size: 15px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .compare .c-label { justify-content: flex-start; }
+
+    .compare .c-label { padding-left: 0; text-align: left; font-size: 14px; color: var(--text-2); }
+    .compare .c-ym { color: var(--text); font-weight: 500; }
+    .compare .c-pp { color: var(--text-2); }
+
+    .compare .c-head {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    .compare .c-head.c-ym { color: var(--gold); }
+    .compare .c-strong { font-size: 16px; font-weight: 600; }
+    .compare .c-strong.c-ym { color: var(--gold); }
+    .compare .c-last { border-bottom: none; }
+
+    footer { border-top: 1px solid rgba(212,175,85,0.2); padding: 18px 0; margin-top: 24px; }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px 20px;
+    }
+
+    .footer-text { font-size: 12px; color: var(--text-3); }
+    .footer-text a { color: var(--gold); font-size: 13px; text-underline-offset: 3px; }
+
+    .hidden { display: none !important; }
+
+    @media (min-width: 900px) {
+      .sticky-inner { grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 20px; }
+      .tab-btn { padding: 8px 16px; }
+      .compare { grid-template-columns: minmax(0, 1fr) 170px 170px; }
+    }
+
+    @media (max-width: 899px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .logo-container { flex-direction: column; gap: 8px; text-align: center; }
+      .menu-grid { grid-template-columns: 1fr; grid-template-areas: "ask" "rec" "yours" "status" "pour"; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .rules-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .header-inner, .footer-inner { padding: 0 16px; }
+      .sticky-inner { padding: 8px 16px 10px; gap: 8px; }
+      main { padding: 16px; }
+      .panel { padding: 18px 16px; }
+      .logo-container svg { height: 40px; }
+      .tab-btn { padding: 8px 6px; }
+      .pc-value { font-size: 36px; }
+      .delta-box { padding: 18px 16px; }
+      .delta-value { font-size: 34px; }
+    }
+
+    @media (max-width: 359px) {
+      .tab-btn { font-size: 12px; padding: 8px 4px; }
+      .pc-value { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo-container">
+        <svg viewBox="0 0 1641 642" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0)">
+<path d="M795.437 322.02L795.501 321.915L795.385 321.913L795.437 322.02ZM693.451 152.214L693.37 152.161L693.364 152.271L693.451 152.214ZM696.813 168.378L696.758 168.302L696.72 168.383L696.813 168.378ZM704.971 169.312L705.062 169.269L704.983 169.207L704.971 169.312ZM688.361 131.561L688.451 131.529L688.368 131.472L688.361 131.561ZM792.463 76.1294C792.424 76.0927 792.386 76.0565 792.347 76.0202C792.343 76.0561 792.324 76.1121 792.339 76.1236C792.366 76.1437 792.413 76.1371 792.463 76.1294ZM883.533 264.134C883.569 264.144 883.606 264.153 883.643 264.162C883.65 264.124 883.672 264.078 883.659 264.051C883.648 264.029 883.592 264.03 883.556 264.021C883.549 264.058 883.54 264.097 883.533 264.134ZM829.774 173.815L829.786 173.936L829.874 173.854L829.774 173.815ZM906.268 125.605L906.278 125.732L906.377 125.664L906.268 125.605ZM807.869 278.859C807.843 278.829 807.817 278.799 807.79 278.769C807.763 278.798 807.714 278.827 807.716 278.854C807.717 278.886 807.762 278.916 807.788 278.947L807.869 278.859ZM835.355 49.6485C835.297 49.696 835.259 49.7261 835.222 49.7561C835.257 49.7708 835.293 49.7855 835.329 49.8001C835.336 49.7615 835.343 49.723 835.355 49.6485ZM760.551 144.665L760.61 144.748L760.653 144.66L760.551 144.665ZM813.076 184.589C821.748 192.135 830.206 199.928 838.453 207.932C841.07 210.473 846.554 218.742 849.722 214.209C850.325 213.346 851.214 212.655 852.058 211.99C854.999 209.671 848.344 205.048 846.561 203.099C839.918 195.837 833.391 188.471 826.881 181.091C823.625 177.4 820.375 173.705 817.116 170.017C815.911 168.655 808.894 162.74 808.901 160.917C808.901 160.805 808.901 160.693 808.902 160.581C808.144 160.039 807.387 159.497 806.644 158.97C805.506 157.902 804.335 156.866 803.237 155.759C799.851 152.348 796.805 148.849 793.721 145.23C789.984 147.01 787.793 150.855 784.875 153.608C783.356 155.04 781.232 155.948 782.233 158.504C782.794 159.933 784.073 160.934 785.292 161.869C794.789 169.147 804.049 176.734 813.076 184.589ZM825.44 35.4382C824.791 34.8962 824.143 34.3546 823.494 33.8131C823.385 33.8127 823.277 33.8119 823.168 33.8115C819.69 32.8206 816.435 34.1367 813.115 34.782L813.121 34.7882C812.472 35.0027 811.823 35.2175 811.175 35.432C808.737 37.0501 808.437 39.8945 807.277 42.2436L807.294 42.229C805.122 49.5282 806.785 56.1485 810.85 62.3441C812.15 63.6429 813.449 64.9408 814.749 66.2396L814.68 66.2689L814.741 66.2315C815.93 67.4203 817.118 68.6088 818.307 69.7972L818.301 69.8034C822.859 67.8871 826.706 65.0489 829.652 61.0415L829.643 61.0504C830.403 59.9669 831.162 58.8833 831.922 57.7998L831.912 57.8091C831.805 54.349 831.698 50.889 831.59 47.4286L831.649 47.4618L831.582 47.4352C830.716 43.0841 830.365 38.4897 826.078 35.7521L826.087 35.7618C825.868 35.6507 825.649 35.5396 825.43 35.4285L825.44 35.4382ZM910.781 159.611C910.891 156.649 916.18 152.682 918.131 150.88C921.242 148.006 924.737 145.83 925.296 141.186C925.742 137.476 924.057 133.583 921.046 131.37C917.988 129.121 913.877 128.672 910.16 129.445C903.042 130.925 894.265 136.478 889.012 141.408L888.908 141.507C888.386 141.812 887.864 142.118 887.343 142.423C887.342 142.535 887.341 142.648 887.34 142.76C895.541 148.104 903.334 153.883 910.949 160.04C910.827 159.942 910.774 159.797 910.781 159.611ZM736.058 132.096C733.632 131.245 731.023 130.55 728.541 131.188C725.984 131.846 723.937 133.875 722.747 136.231C720.679 140.323 720.98 145.323 722.715 149.567C724.449 153.81 727.481 157.397 730.766 160.595C731.426 161.238 732.254 161.918 733.159 161.74C733.738 161.626 734.187 161.179 734.598 160.754C736.999 158.27 754.301 143.339 752.35 140.359C752.106 139.985 751.719 139.733 751.342 139.495C746.617 136.515 741.561 134.057 736.299 132.182C736.219 132.153 736.138 132.125 736.058 132.096ZM844.141 171.236C856.427 157.706 868.331 143.744 882.615 132.384C890.233 126.326 898.783 120.934 908.389 119.363C915.92 118.132 924.366 119.662 929.555 125.258C932.548 128.486 934.197 132.761 935.07 137.076C936 141.666 936.101 146.55 934.426 150.924C932.407 156.194 928.055 160.185 923.668 163.736C922.228 164.902 920.637 166.293 920.594 168.146C920.534 170.766 923.854 172.376 926.368 171.638C928.882 170.899 930.649 168.703 932.231 166.614C937.381 159.812 942.514 152.49 943.627 144.031C944.444 137.83 942.986 131.482 940.345 125.812C937.494 119.689 933.18 114.146 927.505 110.482C920.022 105.652 910.593 104.396 901.802 105.827C893.011 107.257 884.792 111.196 877.331 116.06C866.076 123.397 856.369 132.83 846.74 142.199C840.928 147.856 835.115 153.512 829.303 159.168C822.603 165.688 833.576 173.338 838.694 177.161C840.524 175.202 842.337 173.224 844.141 171.236ZM844.349 51.5814C844.492 52.6885 844.573 53.804 844.582 54.9257C844.632 60.9694 842.389 67.2217 837.73 71.0705C836.933 71.729 836.057 72.3311 835.485 73.1932C835.008 73.9133 834.773 74.7759 834.272 75.4794C832.929 77.3649 829.757 78.1595 829.798 80.4735C829.816 81.4394 830.46 82.2699 831.102 82.9916C832.616 84.6911 834.301 86.2379 836.123 87.6015C836.61 87.9652 837.161 88.3324 837.766 88.2884C838.372 88.2445 838.864 87.8016 839.304 87.3824C843.25 83.6238 847.2 79.8621 850.894 75.8555C854.619 71.8161 858.159 67.3856 859.762 62.1297C861.615 56.0532 860.695 49.5012 859.401 43.2813C856.911 31.3031 852.305 18.5713 841.795 12.3085C833.429 7.32332 822.992 7.50501 813.364 8.96848C804.266 10.3517 794.799 13.0468 788.554 19.806C783.268 25.5279 780.982 33.5774 781.129 41.3665C781.415 56.5585 789.359 69.7324 797.68 81.8826C806.069 94.1311 815.771 105.481 826.578 115.66C830.996 119.822 835.653 123.854 838.96 128.943C840.048 130.619 841.525 132.664 843.485 132.275C844.216 132.13 844.828 131.65 845.401 131.175C847.503 129.428 849.48 127.531 851.313 125.505C852.074 124.664 852.857 123.652 852.712 122.528C852.61 121.732 852.057 121.078 851.528 120.474C839.3 106.522 826.941 92.6665 813.776 79.5952C808.937 74.7905 803.942 70.0325 800.302 64.2666C796.662 58.5003 794.467 51.4931 795.846 44.8153C797.62 36.2258 804.996 29.7147 813.078 26.3079C816.811 24.7345 820.923 23.676 824.905 24.4147C831.622 25.6606 836.402 31.6352 839.593 37.6754C841.892 42.0276 843.722 46.7235 844.349 51.5814ZM870.208 245.015C870.277 251.518 881.216 258.673 886.017 261.199C890.891 263.764 896.26 265.575 901.768 265.674C908.984 265.805 915.971 262.998 922.148 259.266C928.936 255.165 935.159 249.704 938.651 242.585C943.084 233.549 942.622 222.659 939.135 213.218C935.648 203.777 929.389 195.604 922.509 188.259C915.63 180.913 908.05 174.243 901.259 166.815C895.658 160.686 890.601 154.048 884.616 148.293C884.14 147.835 883.606 147.358 882.948 147.296C882.266 147.232 881.635 147.63 881.076 148.024C878.344 149.947 875.829 152.176 873.592 154.658C872.936 155.387 872.263 156.251 872.341 157.23C872.417 158.188 873.185 158.926 873.906 159.562C888.072 172.076 903.465 183.303 916.206 197.264C923.79 205.574 930.636 215.516 931.15 226.755C931.422 232.703 929.74 238.89 925.743 243.302C920.657 248.918 912.392 250.95 904.914 249.732C897.435 248.514 890.684 244.426 884.975 239.445C883.209 237.905 881.375 235.867 881.748 233.553C882.155 231.022 885.166 229.629 887.702 230.003C890.239 230.376 892.393 231.982 894.493 233.454C897.507 235.567 900.722 237.539 904.313 238.353C907.904 239.166 911.963 238.661 914.751 236.256C918.637 232.905 919.023 226.959 917.876 221.959C916.434 215.67 913.012 209.85 908.218 205.532C896.221 217.209 884.225 228.885 872.228 240.561C870.789 241.962 870.192 243.47 870.208 245.015ZM741.533 258.304C750.675 256.057 759.135 250.896 766.411 244.779C779.089 234.122 789.467 220.978 801.672 209.89L811.956 200.547C812.223 200.305 812.504 200.037 812.574 199.684C812.648 199.316 812.474 198.948 812.296 198.619C811.235 196.659 809.812 194.896 808.121 193.446C807.225 192.678 806.169 191.968 804.989 191.964C803.445 191.958 802.185 193.133 801.093 194.224C790.578 204.73 779.365 214.536 767.552 223.558C764.857 225.616 762.035 227.745 760.516 230.778C759.475 232.856 759.125 235.215 758.193 237.344C756.615 240.949 753.464 243.654 750.051 245.615C741.789 250.362 731.165 251.204 722.636 246.955C714.106 242.707 708.249 233.151 709.218 223.671C710.035 215.677 715.192 208.817 720.762 203.024C721.129 202.643 721.52 202.218 721.561 201.69C721.599 201.191 721.313 200.731 721.033 200.317C718.486 196.539 715.495 193.061 712.141 189.977C706.756 196.69 701.99 204.037 699.277 212.205C696.564 220.373 696.024 229.453 698.967 237.541C703.942 251.216 718.843 260.066 733.383 259.478C736.149 259.366 738.87 258.959 741.533 258.304ZM823.776 364.245C815.576 364.556 807.372 363.23 800.385 359.859C788.904 354.322 779.43 344.302 775.248 332.189C771.072 320.097 772.094 306.639 776.978 294.915C779.505 288.847 783.069 283.194 787.52 278.353C790.201 275.436 799.442 271.297 795.331 267.469C794.617 266.803 794.002 266.029 793.351 265.313C793.24 265.094 793.129 264.875 793.026 264.664C788.853 261.935 786.196 257.714 782.79 254.232C780.638 252.032 778.586 249.735 776.498 247.472C776.635 248.309 776.771 249.146 776.908 249.983C776.85 250.043 776.792 250.103 776.733 250.162C776.438 250.564 776.144 250.965 775.849 251.367C775.741 251.585 775.632 251.804 775.524 252.022C773.9 253.751 772.277 255.48 770.665 257.196C770.185 257.709 770.216 258.859 769.039 258.502C768.842 259.604 768.359 260.421 767.098 260.441C746.735 275.349 715.739 275.2 698.554 255.302C681.485 235.539 687.199 211.777 699.348 191.712C701.229 189.661 702.813 187.149 705.076 185.695C707.136 184.372 707.575 183.496 706.152 181.655L706.196 181.607L706.158 181.659C705.646 182.361 689.753 157.476 688.915 154.757C682.769 134.816 691.444 111.022 710.193 101.419C720.331 96.2256 732.171 95.2767 743.519 96.2604C749.452 96.7749 755.632 97.8638 760.969 100.632C764.063 102.237 772.04 107.242 773.572 110.394C774.544 112.392 775.99 114.385 777.759 115.621C778.239 115.957 780.559 113.596 781.783 111.997C783.659 109.544 786.219 107.613 788.48 105.469C790.102 103.307 791.723 101.144 793.348 98.9775C794.103 97.8962 794.858 96.815 795.613 95.7338C795.829 95.8442 796.045 95.9545 796.266 96.0602C796.05 95.9537 795.833 95.8472 795.616 95.7408C793.511 94.6434 793.11 92.3764 792.061 90.5546C791.946 90.5546 791.832 90.5546 791.718 90.555C791.613 90.3378 791.508 90.1206 791.401 89.9012C788.895 88.435 788.32 85.6184 786.869 83.4143L786.917 83.4733L786.86 83.4205C786.211 82.8759 785.561 82.3312 784.928 81.8008C775.629 74.0094 772.544 55.701 772.199 44.5083C771.785 31.0944 775.625 15.6096 788.488 8.84272C791.189 7.54434 793.895 6.24634 796.58 4.96379C796.687 4.74392 796.794 4.52407 796.901 4.30381C797.017 4.30381 797.132 4.30381 797.248 4.30381C807.323 2.38827 817.099 -0.143676 827.454 0.00637384C830.922 0.0569047 834.405 0.328838 837.778 1.1435C846.991 3.3684 854.556 9.55863 860.121 17.0461C864.447 22.866 871.908 35.0212 871.777 42.5603C871.755 43.8363 871.733 45.1123 871.711 46.3883C871.758 46.428 871.805 46.4678 871.851 46.5071C872.065 49.3881 872.278 52.2692 872.491 55.1498L872.39 55.2682C872.507 55.8897 872.624 56.5111 872.74 57.1325L872.791 57.1896C872.165 60.9651 873.393 65.0647 870.807 68.5085C870.169 73.2353 868.444 77.2368 863.675 79.2083L863.629 79.1423L863.686 79.2006C863.636 79.6828 863.768 80.4338 863.51 80.6074C856.812 85.1231 852.886 92.8617 845.283 96.3329C845.038 96.4447 844.837 97.3701 845.015 97.5854C847.307 100.357 849.672 103.068 852.009 105.785C853.336 107.211 854.638 108.66 855.995 110.056C859.255 113.407 862.061 119.536 867.204 111.986L867.292 111.895C867.492 111.803 867.692 111.711 867.892 111.619C867.893 111.511 867.894 111.404 867.894 111.296C878.063 104.398 888.824 98.6627 901.047 96.5211C902.108 96.3352 903.198 96.1743 904.257 96.3711C904.988 96.5068 905.679 96.8089 906.408 96.9554C907.31 97.1367 908.242 97.0746 909.161 97.0118C918.698 96.3583 926.452 97.065 934.557 102.816C939.532 106.347 943.589 110.982 946.907 116.073C949.827 120.555 950.485 126.252 953.145 130.434L953.075 130.468L953.139 130.428C953.376 132.462 953.613 134.496 953.851 136.53C953.81 136.572 953.77 136.614 953.728 136.655C954.772 146.448 953.296 155.711 947.96 164.143C944.862 168.645 942.162 173.507 938.527 177.523C936.092 180.212 933.669 181.948 937.252 185.22C954.525 202.622 959.93 232.286 946.345 253.459C933.504 273.472 908.755 280.999 887.336 273.413C887.23 273.424 887.124 273.424 887.017 273.413C879.087 270.851 873.398 265.334 868.216 259.148C867.446 258.058 866.865 256.742 865.866 255.938C864.373 254.738 864.492 251.049 861.086 252.667C853.564 256.244 850.521 265.548 843.219 269.025C842.61 269.315 841.984 269.515 842.942 270.174C850.336 275.259 858.862 289.222 863.129 297.382C869.011 308.635 872.573 323.58 868.677 335.968C865.533 345.963 857.416 353.918 847.956 358.425C840.809 361.83 832.294 363.921 823.776 364.245Z" fill="#695D3F"/>
+<g clip-path="url(#clip1)">
+<path d="M1006.51 637.035C993.184 637.035 979.902 637.035 966.574 637.035C956.521 637.035 954.63 634.515 956.844 624.721C959.657 612.122 966.297 602.66 977.919 597.288C994.014 589.871 1004.85 577.367 1013.38 561.487C1022.14 545.18 1033.4 530.251 1043.04 514.419C1051.01 501.249 1059.41 488.175 1065.63 474.101C1078.68 444.767 1092.7 416.098 1111.52 390.139C1119.17 379.584 1118.25 373.926 1108.61 364.893C1105.57 362.04 1102.34 359.378 1099.76 356.192C1091.73 346.161 1093.16 333.514 1104.14 327C1110.37 323.34 1117.88 321.105 1125.03 320.344C1140.76 318.633 1156.67 317.682 1172.49 317.587C1180 317.587 1187.66 319.774 1195.04 321.676C1208.69 325.194 1222.24 328.997 1235.71 333.134C1243.37 335.511 1244.24 340.218 1237.97 345.4C1234.7 348.158 1230.22 349.346 1226.58 351.676C1218.6 356.715 1210.07 361.232 1203.06 367.46C1195.41 374.307 1192.64 384.243 1193.38 394.798C1195.54 427.413 1197.76 460.076 1200.16 492.691C1200.62 499.252 1201.72 505.813 1203.11 512.232C1205.46 522.977 1212.47 526.542 1222.11 521.598C1226.81 519.173 1231.24 515.75 1235.11 511.947C1241.98 505.243 1248.85 498.396 1254.76 490.789C1278.28 460.314 1306.82 435.638 1336.8 412.389C1345.38 405.733 1353.77 398.649 1361.38 390.947C1371.16 381.058 1371.76 373.689 1365.58 361.042C1356.91 343.308 1363.78 327.286 1382.59 322.959C1392 320.82 1401.87 319.774 1411.51 319.774C1429.68 319.774 1447.8 320.677 1465.97 321.485C1471.69 321.723 1476.3 324.338 1478.47 330.329C1480.82 336.747 1479.35 342.642 1474.78 347.064C1470.91 350.772 1466.06 353.34 1461.5 356.192C1452.55 361.803 1442.91 366.367 1434.66 372.88C1421.19 383.53 1415.2 397.889 1416.4 415.908C1416.81 422.469 1415.43 430.932 1411.6 435.829C1382.68 472.96 1366.45 515.845 1355.8 561.487C1353.86 569.712 1350.77 577.747 1349.99 586.068C1349.11 595.291 1349.2 604.895 1350.77 613.976C1352.25 622.344 1351.97 627.098 1344.36 630.901C1340.58 632.803 1336.06 633.754 1331.86 633.802C1310.37 634.087 1288.84 634.087 1267.3 633.802C1263.89 633.754 1260.48 631.52 1257.06 630.283C1258.77 627.003 1259.69 622.676 1262.27 620.537C1275.09 609.935 1282.89 596.337 1289.39 580.933C1294.97 567.763 1302.67 555.354 1310.74 543.563C1326.56 520.362 1335.18 495.021 1335.74 466.732C1335.92 457.937 1333.57 455.559 1325.73 458.887C1315.4 463.261 1305.07 468.206 1295.85 474.624C1286.81 480.948 1278.88 489.078 1271.04 497.018C1261.17 506.954 1251.16 516.083 1239.22 523.785C1228.61 530.584 1220.72 542.28 1212.56 552.644C1200.94 567.335 1190.42 582.93 1178.94 597.716C1175.67 601.9 1171.06 605.37 1166.35 607.89C1157.82 612.502 1149.01 607.32 1147.72 597.431C1143.98 568.857 1141.08 540.33 1147.21 511.614C1149.84 499.252 1147.72 486.938 1142.83 475.195C1141.22 471.344 1139.88 467.35 1138.96 463.261C1137.07 454.656 1130.75 450.948 1123.14 454.846C1120.51 456.177 1117.7 458.364 1116.31 460.932C1106.72 478.333 1097.55 496.019 1088.05 513.515C1084.45 520.124 1080.48 526.542 1076.47 532.818C1070.01 542.898 1062.22 552.264 1057.06 562.961C1050.46 576.654 1051.15 591.06 1059.55 604.372C1060.93 606.559 1062.13 608.936 1063.37 611.266C1069.83 623.152 1065.17 632.328 1051.75 633.754C1047.19 634.23 1042.53 634.182 1037.92 634.372C1027.45 634.848 1016.93 635.323 1006.47 635.799C1006.47 636.226 1006.47 636.702 1006.47 637.13L1006.51 637.035Z" fill="#695D3F"/>
+<path d="M65.086 640.087C44.3797 640.087 28.2388 640.467 12.1902 639.802C8.31644 639.659 2.82856 636.806 1.30671 633.621C-0.215139 630.388 0.799428 623.399 3.33584 621.117C10.8529 614.223 18.9233 606.996 28.1005 603.24C46.2243 595.776 59.3676 583.89 68.2681 566.204C88.4672 526.029 100.365 483.81 96.307 438.263C94.4162 416.821 89.8968 395.568 85.9307 374.316C83.9938 363.952 77.9987 356.107 68.4064 351.638C62.2729 348.785 61.2122 344.173 63.5181 337.993C69.6977 321.447 80.489 313.84 97.6905 314.126C115.86 314.458 134.077 314.316 152.2 315.267C167.004 316.075 170.463 323.872 162.53 336.899C160.916 339.562 159.026 342.129 157.043 344.506C150.494 352.256 147.681 361.147 147.958 371.464C148.419 388.104 148.188 404.744 148.695 421.337C149.157 435.077 154.967 438.596 165.62 430.941C190.846 412.732 212.751 391.099 226.955 362.335C231.106 353.92 232.951 345.077 230.414 335.52C227.693 325.346 230.137 318.88 240.191 315.742C251.074 312.366 262.604 310.607 273.994 309.752C282.849 309.086 291.934 310.274 300.742 311.748C311.395 313.555 315.269 324.68 307.613 332.478C303.186 336.994 296.592 340.655 290.504 341.701C270.443 345.267 257.07 356.677 246.693 374.269C240.145 385.346 232.397 396.614 222.713 404.649C181.531 438.786 154.921 482.384 139.38 533.874C136.659 542.907 132.924 551.608 129.834 560.546C128.174 565.253 126.375 569.96 125.499 574.857C122.916 588.882 127.297 597.868 139.887 603.668C146.574 606.759 151.509 610.229 150.31 618.835C149.157 627.012 143.761 632.813 134.768 633.716C110.096 636.188 85.4235 638.28 65.1321 640.134L65.086 640.087Z" fill="#695D3F"/>
+<path d="M680.194 438.726C685.82 439.249 691.401 439.82 697.027 440.248C703.437 440.723 704.498 444.717 703.253 450.184C702.976 451.468 702.422 452.656 701.915 453.893C690.617 481.848 679.272 509.804 667.927 537.808C665.944 542.657 664.468 547.84 661.978 552.404C651.371 571.707 645.883 591.96 647.682 614.449C648.051 619.251 644.408 625.717 640.718 629.235C629.558 639.742 615.954 642.832 601.381 638.363C596.908 636.984 592.065 634.37 589.206 630.756C582.519 622.293 574.264 620.915 565.087 623.387C557.432 625.479 550.191 629.045 542.582 631.232C532.021 634.274 521.415 637.793 510.623 638.934C495.22 640.598 485.213 631.85 484.383 615.922C483.922 606.746 485.628 597 488.487 588.204C497.25 561.247 507.026 534.575 516.526 507.855C519.708 498.869 519.109 490.454 514.774 481.944C510.07 472.72 510.762 468.679 518.417 461.832C534.42 447.474 553.742 439.677 573.573 433.259C576.201 432.403 581.551 435.303 583.395 438.06C590.682 448.853 589.667 461.357 580.905 473.291C567.9 491.072 556.279 509.662 548.854 530.676C543.089 546.936 540.046 563.719 540.645 581.12C541.199 597.475 549.361 605.082 565.225 604.036C586.577 602.61 605.946 585.162 611.019 559.345C615.723 535.335 623.701 512.752 632.602 490.264C635.553 482.847 635.784 473.814 635.415 465.588C635 455.937 635.83 450.565 644.638 447.141C655.937 442.72 667.927 440.152 679.595 436.777L680.24 438.726H680.194Z" fill="#695D3F"/>
+<path d="M235.209 570.18C240.558 512.699 267.905 468.673 322 443.713C338.418 436.106 355.158 431.399 373.374 433.966C376.095 434.347 379 433.871 381.767 433.396C401.413 430.258 418.384 435.726 431.896 450.845C439.367 459.165 446.146 468.151 452.925 477.089C459.289 485.504 457.675 495.298 455.6 504.522C449.42 531.574 437.799 555.679 416.908 574.031C401.136 587.866 385.134 601.464 369.039 615.014C355.066 626.757 338.741 632.272 320.986 633.746C310.517 634.602 300.049 635.22 289.672 636.741C279.573 638.215 271.272 635.648 263.432 628.944C246.092 614.206 235.531 596.186 235.301 570.227L235.209 570.18ZM323.245 609.118C359.401 609.261 380.245 590.909 385.687 557.866C387.44 547.169 390.76 536.376 395.464 526.677C412.297 491.97 394.265 456.217 356.726 452.033C352.391 451.558 346.626 453.174 343.398 456.074C332.238 466.106 321.585 476.804 311.347 487.881C302.862 497.105 298.481 508.373 297.236 521.305C296.221 532.002 295.621 543.603 291.102 552.874C284.369 566.709 287.689 577.407 294.284 589.435C301.432 602.51 311.209 609.499 323.199 609.118H323.245Z" fill="#695D3F"/>
+<path d="M1430.36 586.364C1440.37 524.415 1466.01 475.539 1522.92 449.818C1540.86 441.688 1560.14 436.791 1578.95 430.848C1583.75 429.327 1589.05 429.089 1594.12 428.994C1619.21 428.614 1633.28 442.116 1635.07 467.98C1636.78 492.941 1634.57 497.6 1611.37 504.541C1592.51 510.199 1573.19 514.478 1553.82 517.758C1524.67 522.751 1504.06 539.343 1490.59 565.35C1480.63 584.558 1489.02 602.244 1509.96 605.287C1522.27 607.094 1535.23 604.289 1547.91 603.433C1550.45 603.243 1552.99 601.911 1555.43 602.149C1558.47 602.434 1563.64 603.385 1563.92 604.859C1564.56 608.235 1563.09 612.181 1561.84 615.652C1561.33 617.125 1559.35 618.457 1557.78 619.075C1541.27 625.351 1524.81 631.864 1508.02 637.427C1503.46 638.948 1497.92 637.617 1492.9 637.189C1482.01 636.238 1471.22 634.431 1460.34 634.099C1447.2 633.766 1441.89 631.246 1437.83 618.409C1434.47 607.759 1432.71 596.634 1430.36 586.364ZM1576.78 477.013C1575.54 460.706 1565.21 453.099 1551.51 459.612C1534.96 467.457 1522.46 480.009 1515.86 497.933C1511.9 508.63 1516.23 514.24 1527.53 512.957C1543.53 511.102 1557.69 504.589 1568.71 492.418C1572.45 488.281 1574.2 482.196 1576.83 477.013H1576.78Z" fill="#695D3F"/>
+<path d="M788.602 546.621C785.605 535.258 794.69 528.269 801.054 519.806C812.998 503.879 827.894 493.181 847.632 490.566C850.906 490.138 854.273 489.853 857.547 489.996C863.819 490.233 866.447 493.514 867.877 500.17C871.105 515.337 865.433 525.986 854.964 535.828C851.413 539.156 849.615 545.194 848.6 550.281C848.093 552.754 850.537 557.318 852.843 558.554C855.103 559.743 859.76 558.934 861.79 557.128C868.753 550.995 875.209 544.148 881.527 537.302C886.462 531.977 890.474 525.606 895.87 520.804C899.236 517.809 904.355 515.479 908.69 515.432C911.78 515.432 916.253 518.997 917.545 522.135C918.421 524.322 915.792 529.505 913.302 531.406C901.773 540.202 889.69 548.189 877.976 556.747C866.493 565.115 859.853 576.668 858.423 591.169C857.27 602.865 863.957 608.475 875.025 605.195C876.27 604.814 877.423 603.863 878.622 603.911C880.928 604.006 884.617 603.816 885.263 605.1C886.324 607.192 886.554 611.28 885.263 612.944C875.44 625.258 863.081 634.149 848.093 638.095C844.772 638.951 840.023 635.956 836.518 633.721C834.12 632.152 832.69 628.872 830.984 626.257C824.712 616.653 822.821 616.32 812.86 621.55C800.547 628.016 788.326 634.577 775.69 640.235C764.76 645.132 757.889 636.241 751.156 630.013C745.022 624.355 745.114 616.415 748.527 608.76C751.986 600.868 754.937 592.643 759.134 585.179C761.532 580.947 765.406 576.336 769.648 574.671C787.726 567.54 787.865 567.92 788.602 546.668V546.621ZM796.673 615.131C808.617 614.133 819.731 609.474 825.588 596.732C827.064 593.546 827.064 587.889 825.265 585.179C812.583 565.971 795.289 566.874 783.852 586.843C782.838 588.649 781.915 590.551 781.131 592.5C776.243 604.577 783.022 615.084 796.673 615.179V615.131ZM823.374 538.871C833.981 538.918 841.959 532.215 842.974 524.94C843.896 518.237 839.884 512.199 833.889 513.435C826.003 515.051 818.348 518.237 810.923 521.517C809.493 522.135 808.248 527.793 809.032 528.459C814.197 532.833 819.962 536.541 823.374 538.918V538.871Z" fill="#695D3F"/>
+<path d="M1615.07 350.428C1615.66 350.281 1616.14 349.986 1616.51 349.544C1616.91 349.102 1617.26 348.587 1617.56 347.998C1617.85 347.408 1618.11 346.764 1618.33 346.064C1618.55 345.365 1618.81 344.665 1619.1 343.965C1619.14 343.928 1619.29 343.615 1619.55 343.026C1619.8 342.437 1620.08 341.793 1620.38 341.093C1620.67 340.356 1620.93 339.694 1621.15 339.104C1621.41 338.515 1621.54 338.184 1621.54 338.11C1621.35 338.147 1621.19 338.184 1621.04 338.221C1620.89 338.221 1620.74 338.221 1620.6 338.221C1619.68 338.221 1619.22 337.852 1619.22 337.116C1619.22 336.306 1619.75 335.864 1620.82 335.79L1622.42 335.68C1622.97 335.643 1623.49 335.606 1623.97 335.569C1624.48 335.532 1624.94 335.514 1625.35 335.514C1628.15 335.514 1629.54 336.048 1629.54 337.116C1629.54 337.521 1629.4 337.779 1629.1 337.889C1628.81 338 1628.5 338.092 1628.16 338.165C1627.83 338.202 1627.52 338.294 1627.22 338.441C1626.93 338.589 1626.78 338.883 1626.78 339.325C1626.78 339.583 1626.8 339.896 1626.84 340.264C1626.87 340.596 1626.97 341.019 1627.11 341.535L1627.56 343.192C1627.56 344.26 1627.54 345.346 1627.5 346.451C1627.5 347.556 1627.54 348.66 1627.61 349.765C1627.68 351.349 1627.85 352.527 1628.11 353.3C1628.4 354.074 1628.7 354.645 1628.99 355.013C1629.29 355.381 1629.54 355.639 1629.77 355.786C1630.02 355.933 1630.15 356.173 1630.15 356.504C1630.15 357.241 1628.88 357.609 1626.34 357.609C1624.68 357.609 1623.49 357.591 1622.75 357.554C1622.05 357.517 1621.7 357.222 1621.7 356.67C1621.7 356.265 1621.83 356.007 1622.09 355.897C1622.38 355.749 1622.79 355.676 1623.3 355.676L1624.3 354.626V354.074C1624.3 353.705 1624.28 353.264 1624.24 352.748C1624.2 352.232 1624.15 351.735 1624.08 351.257C1624.04 350.741 1624 350.281 1623.97 349.876C1623.93 349.471 1623.91 349.176 1623.91 348.992V345.954C1623.8 343.928 1623.43 342.566 1622.81 341.866C1622.4 342.419 1622.09 342.934 1621.87 343.413C1621.68 343.892 1621.5 344.37 1621.31 344.849C1621.17 345.328 1620.98 345.806 1620.76 346.285C1620.54 346.727 1620.21 347.206 1619.77 347.721C1619.47 348.458 1619.18 349.194 1618.88 349.931C1618.59 350.631 1618.29 351.275 1618 351.864C1617.74 352.453 1617.5 352.951 1617.28 353.356C1617.1 353.761 1616.95 354.018 1616.84 354.129C1616.84 354.939 1616.21 355.694 1614.96 356.394C1614.78 356.246 1614.56 355.933 1614.3 355.455C1614.04 354.939 1613.77 354.405 1613.47 353.853C1613.21 353.3 1612.94 352.785 1612.64 352.306C1612.38 351.827 1612.14 351.496 1611.92 351.312C1611.81 350.907 1611.5 350.354 1610.98 349.655C1610.21 347.703 1609.64 346.285 1609.27 345.401C1608.9 344.481 1608.65 343.836 1608.5 343.468C1608.35 343.063 1608.22 342.805 1608.11 342.695C1608.04 342.584 1607.89 342.327 1607.67 341.921C1607.19 342.069 1606.95 342.327 1606.95 342.695C1606.95 342.768 1606.99 342.879 1607.06 343.026C1607.06 343.063 1607.01 343.247 1606.9 343.579C1606.79 343.873 1606.68 344.223 1606.57 344.628C1606.46 345.033 1606.34 345.457 1606.23 345.899C1606.16 346.304 1606.12 346.617 1606.12 346.838C1606.12 347.5 1606.31 348.034 1606.68 348.439C1606.64 348.624 1606.58 348.863 1606.51 349.158C1606.44 349.452 1606.36 349.784 1606.29 350.152C1606.4 350.373 1606.46 350.631 1606.46 350.925C1606.46 351.22 1606.38 351.514 1606.23 351.809C1606.49 352.177 1606.62 352.601 1606.62 353.079C1606.62 353.227 1606.6 353.429 1606.57 353.687C1606.53 353.945 1606.51 354.129 1606.51 354.239C1606.51 354.571 1606.69 354.829 1607.06 355.013C1607.43 355.16 1607.82 355.307 1608.22 355.455C1608.66 355.565 1609.07 355.731 1609.44 355.952C1609.81 356.136 1609.99 356.449 1609.99 356.891C1609.99 357.075 1609.95 357.259 1609.88 357.443C1609.84 357.591 1609.64 357.664 1609.27 357.664C1609.09 357.664 1608.94 357.646 1608.83 357.609C1608.2 357.646 1607.56 357.664 1606.9 357.664C1606.27 357.664 1605.65 357.664 1605.02 357.664C1603.29 357.664 1602.42 357.167 1602.42 356.173C1602.42 355.915 1602.48 355.62 1602.59 355.289L1603.03 355.068C1603.44 354.331 1603.88 352.619 1604.36 349.931C1604.83 347.206 1605.07 343.689 1605.07 339.381C1605.07 339.381 1604.96 339.27 1604.74 339.049C1604.56 338.791 1604.36 338.515 1604.14 338.221C1603.91 337.889 1603.69 337.576 1603.47 337.282C1603.29 336.987 1603.2 336.784 1603.2 336.674C1603.2 336.379 1603.66 336.177 1604.58 336.066C1605.5 335.919 1607.27 335.845 1609.88 335.845C1610.65 335.845 1611.26 335.864 1611.7 335.901C1612.14 335.937 1612.48 335.993 1612.7 336.066C1612.95 336.14 1613.1 336.214 1613.14 336.287C1613.21 336.361 1613.25 336.416 1613.25 336.453C1613.25 336.49 1613.1 336.6 1612.81 336.784C1612.51 336.932 1612.18 337.134 1611.81 337.392C1611.48 337.65 1611.17 337.908 1610.87 338.165C1610.58 338.423 1610.43 338.644 1610.43 338.828V338.939C1610.54 339.417 1610.73 340.007 1610.98 340.706C1611.24 341.369 1611.52 342.087 1611.81 342.86C1612.14 343.634 1612.48 344.407 1612.81 345.18C1613.14 345.954 1613.45 346.69 1613.75 347.39C1614.08 348.09 1614.35 348.716 1614.58 349.268C1614.8 349.784 1614.96 350.17 1615.07 350.428ZM1584.19 339.436L1581.76 339.933C1581.76 340.375 1581.52 340.743 1581.05 341.038C1580.57 341.295 1580.18 341.443 1579.89 341.48C1579.48 340.964 1579.28 340.412 1579.28 339.822C1579.28 338.497 1580.01 337.429 1581.49 336.619C1581.82 336.619 1582.52 336.619 1583.59 336.619C1584.65 336.582 1585.81 336.545 1587.07 336.508C1588.36 336.471 1589.59 336.453 1590.77 336.453C1591.98 336.416 1592.85 336.398 1593.36 336.398C1594.51 336.398 1595.5 336.398 1596.35 336.398C1597.23 336.361 1597.95 336.398 1598.5 336.508C1599.09 336.619 1599.53 336.84 1599.83 337.171C1600.12 337.502 1600.27 338.018 1600.27 338.718C1600.27 338.865 1600.23 339.215 1600.16 339.767C1600.12 340.32 1600.1 340.835 1600.1 341.314C1600.1 341.572 1600.12 341.737 1600.16 341.811C1599.75 342.327 1599.38 342.603 1599.05 342.64C1598.8 342.382 1598.67 342.05 1598.67 341.645V341.424C1598.59 341.387 1598.37 340.89 1598 339.933L1596.79 339.381V338.994C1596.49 338.92 1596.05 338.865 1595.46 338.828C1594.91 338.791 1594.21 338.773 1593.36 338.773C1592.26 338.773 1591.65 338.865 1591.54 339.049C1591.28 340.448 1591.15 343.468 1591.15 348.108C1591.15 352.49 1591.36 354.829 1591.76 355.123C1592.31 355.528 1592.59 355.897 1592.59 356.228C1592.59 356.523 1592.52 356.744 1592.37 356.891C1592.26 357.001 1592.11 357.075 1591.93 357.112C1591.74 357.149 1591.56 357.167 1591.38 357.167C1591.23 357.167 1591.1 357.167 1590.99 357.167C1590.69 357.167 1590.53 357.149 1590.49 357.112C1589.42 357.112 1588.47 357.13 1587.62 357.167C1586.81 357.167 1586.15 357.185 1585.63 357.222C1584.97 356.964 1584.56 356.651 1584.42 356.283C1584.49 355.878 1584.56 355.491 1584.64 355.123C1584.71 354.718 1584.97 354.516 1585.41 354.516H1585.63C1585.96 354.516 1586.29 354.258 1586.63 353.742C1586.96 353.19 1587.12 352.619 1587.12 352.03C1587.12 352.104 1587.14 351.717 1587.18 350.87C1587.21 349.986 1587.25 348.955 1587.29 347.777C1587.36 346.561 1587.42 345.383 1587.45 344.241C1587.49 343.063 1587.51 342.216 1587.51 341.701C1587.51 340.89 1587.49 340.283 1587.45 339.878C1587.42 339.473 1587.34 339.196 1587.23 339.049C1587.16 338.865 1587.05 338.773 1586.9 338.773C1586.79 338.773 1586.63 338.773 1586.4 338.773C1585.89 338.773 1585.21 338.865 1584.36 339.049L1584.19 339.436Z" fill="#695D3F"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0"><rect width="1641" height="642" fill="white"/></clipPath>
+<clipPath id="clip1"><rect width="1769.76" height="330.497" fill="white" transform="translate(-64.38 309.503)"/></clipPath>
+</defs>
+</svg>
+        <p class="subtitle">Pricing Tool • Europe 2026</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Stays at the top while you scroll: the tabs and the one button. The button drives every number on every tab. -->
+  <div class="sticky-bar" id="stickyBar">
+    <div class="sticky-inner">
+      <nav class="tabs" aria-label="Sections">
+        <button class="tab-btn active" type="button" data-tab="offer">Offer</button>
+        <button class="tab-btn" type="button" data-tab="menu">Menu price</button>
+        <button class="tab-btn" type="button" data-tab="margin">Margin</button>
+        <button class="tab-btn" type="button" data-tab="how">How it works</button>
+      </nav>
+      <button class="listing-toggle on" id="listingToggle" type="button" role="switch" aria-checked="true">
+        <span class="switch" aria-hidden="true"></span>
+        <span class="toggle-text">
+          <span class="toggle-title">Menu listing + bottle return</span>
+          <span class="toggle-sub"><span id="toggleState"></span> <strong class="toggle-inline-price" id="togglePrice"></strong> <span id="toggleHint"></span></span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <main>
+    <!-- Offer -->
+    <div class="tab-content active" id="tab-offer">
+      <div class="grid-2">
+        <div>
+          <div class="price-cards">
+            <button class="price-card" type="button" id="cardList" aria-pressed="false">
+              <span class="pc-check" aria-hidden="true">&#10003;</span>
+              <span class="pc-label">List price</span>
+              <span class="pc-value display" id="priceList"></span>
+              <span class="pc-sub">per bottle, ex VAT</span>
+            </button>
+            <button class="price-card active" type="button" id="cardCredit" aria-pressed="true">
+              <span class="pc-check" aria-hidden="true">&#10003;</span>
+              <span class="pc-label">With credit</span>
+              <span class="pc-value display" id="priceCredit"></span>
+              <span class="pc-sub">listing + bottle return</span>
+            </button>
+          </div>
+          <p class="saving-line" id="savingLine"></p>
+        </div>
+
+        <div class="panel">
+          <h2 class="section-title">Your order</h2>
+          <div class="form-group">
+            <label for="cases" id="casesLabel">Cases</label>
+            <div class="stepper">
+              <button class="step-btn" type="button" id="casesMinus" aria-label="One case less">&minus;</button>
+              <input class="num" id="cases" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off">
+              <button class="step-btn" type="button" id="casesPlus" aria-label="One case more">+</button>
+            </div>
+          </div>
+          <div class="form-group hidden" id="vatGroup">
+            <label for="vatRate">VAT rate (%)</label>
+            <input class="num" id="vatRate" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off">
+          </div>
+          <div class="line"><span>Bottles</span><strong id="oBottles"></strong></div>
+          <div class="line"><span>Invoice today, ex VAT</span><strong id="oInvoice"></strong></div>
+          <div class="line"><span id="oVatLabel">VAT</span><strong id="oVat"></strong></div>
+          <div class="line"><span>Invoice today, inc VAT</span><strong id="oTotal"></strong></div>
+          <div class="line credit" id="oCreditLine"><span>Credit on your next order</span><strong id="oCredit"></strong></div>
+          <div class="line total"><span>Net cost after credit</span><strong class="display" id="oNet"></strong></div>
+          <p class="note" id="orderNote"></p>
+          <button class="action-btn" type="button" id="copyBtn">Copy offer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu price -->
+    <div class="tab-content" id="tab-menu">
+      <div class="panel">
+        <h2 class="section-title">Your menu</h2>
+        <div class="menu-grid">
+          <div class="area-ask">
+            <label for="premiumCocktail">Your premium pour cocktail price</label>
+            <div class="money-input">
+              <span class="prefix" aria-hidden="true">€</span>
+              <input class="num" id="premiumCocktail" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off">
+            </div>
+          </div>
+          <div class="result-box area-rec">
+            <div class="result-label">Recommended You &amp; Me price</div>
+            <div class="result-value display" id="recPrice"></div>
+            <div class="result-detail" id="recDetail"></div>
+          </div>
+          <div class="area-yours">
+            <label for="ymMenuPrice">Your You &amp; Me cocktail price</label>
+            <div class="money-input">
+              <span class="prefix" aria-hidden="true">€</span>
+              <input class="num" id="ymMenuPrice" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off">
+            </div>
+            <button class="link-btn hidden" type="button" id="useRecommended">Use the recommended price</button>
+          </div>
+          <div class="status-box ok area-status" id="menuStatus">
+            <div class="status-dot"></div>
+            <div>
+              <div class="status-title" id="menuStatusTitle"></div>
+              <div class="status-detail" id="menuStatusDetail"></div>
+            </div>
+          </div>
+          <div class="area-pour">
+            <span class="field-label">Pour size</span>
+            <div class="btn-group" id="pourGroup"></div>
+            <p class="note" id="pourNote"></p>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="section-title spaced">Menu price ladder</h2>
+      <div class="grid-3" id="ladder"></div>
+      <p class="note" id="floorNote"></p>
+    </div>
+
+    <!-- Margin -->
+    <div class="tab-content" id="tab-margin">
+      <div class="delta-box positive" id="deltaBox">
+        <h3 class="delta-title">Your extra margin with You &amp; Me</h3>
+        <div class="delta-grid">
+          <div>
+            <div class="delta-label">Per cocktail</div>
+            <div class="delta-value display" id="deltaCocktail"></div>
+          </div>
+          <div>
+            <div class="delta-label">Per bottle</div>
+            <div class="delta-value display" id="deltaBottle"></div>
+          </div>
+        </div>
+        <p class="delta-summary" id="deltaSummary"></p>
+      </div>
+
+      <div class="panel">
+        <h2 class="section-title">The working</h2>
+        <div class="form-group">
+          <label for="premiumBottle">Your premium pour bottle cost, ex VAT</label>
+          <div class="money-input">
+            <span class="prefix" aria-hidden="true">€</span>
+            <input class="num" id="premiumBottle" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="compare">
+          <div class="c-label c-head"></div>
+          <div class="c-head c-ym">You &amp; Me</div>
+          <div class="c-head c-pp">Premium pour</div>
+
+          <div class="c-label">Menu price</div>
+          <div class="c-ym" id="ymMenu"></div>
+          <div class="c-pp" id="ppMenu"></div>
+
+          <div class="c-label">Bottle cost</div>
+          <div class="c-ym" id="ymBottle"></div>
+          <div class="c-pp" id="ppBottle"></div>
+
+          <div class="c-label">Vodka per cocktail</div>
+          <div class="c-ym" id="ymCost"></div>
+          <div class="c-pp" id="ppCost"></div>
+
+          <div class="c-label">Margin per cocktail</div>
+          <div class="c-ym c-strong" id="ymGross"></div>
+          <div class="c-pp c-strong" id="ppGross"></div>
+
+          <div class="c-label c-last">Margin per bottle</div>
+          <div class="c-ym c-strong c-last" id="ymGrossBottle"></div>
+          <div class="c-pp c-strong c-last" id="ppGrossBottle"></div>
+        </div>
+
+        <p class="note" id="marginInputs"></p>
+        <button class="link-btn" type="button" id="editMenuPrices">Change the menu prices</button>
+      </div>
+      <p class="note">Menu prices include VAT, bottle costs exclude it. Margins are shown ex VAT and count the vodka only, not the other ingredients.</p>
+    </div>
+
+    <!-- How it works -->
+    <div class="tab-content" id="tab-how">
+      <h2 class="section-title" id="howTitle">How the credit works</h2>
+      <div class="rules-grid" id="howSteps"></div>
+
+      <h2 class="section-title spaced">Good to know</h2>
+      <div class="rules-grid" id="howFacts"></div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-text">You &amp; Me Vodka • Europe Venue Pricing 2026 v2</div>
+      <div class="footer-text">Tier above. Margin protected. Visibility rewarded.</div>
+      <div class="footer-text"><a href="uk/index.html">UK edition</a></div>
+    </div>
+  </footer>
+
+  <!-- Market settings: the only place prices live. Edit src/markets.json, then run build.py. -->
+  <script id="ym-config" type="application/json">{"code": "eu", "short": "Europe", "currency": "€", "listPrice": 75.8, "credit": 15, "returnOnlyCredit": 5, "vatRate": 21, "vatEditable": true, "bottleMl": 700, "bottleLabel": "70cl", "caseSize": 6, "pours": [35, 40, 50], "defaultPour": 35, "pourUnit": "cl", "ladder": [{"from": 21, "uplift": 4, "name": "Super Premium"}, {"from": 18, "uplift": 3, "name": "Core Premium"}, {"from": 0, "uplift": 2, "name": "Entry Premium"}], "floor": 18, "defaults": {"cases": 2, "premiumCocktail": 18, "premiumBottle": 35}}</script>
+
+  <!-- Pure calculations. No page access, so test.mjs can check them. -->
+  <script id="ym-logic">
+    var YM = (function () {
+      function round2(n) { return Math.round((n + Number.EPSILON) * 100) / 100; }
+
+      function money(m, n) {
+        var v = round2(Math.abs(n));
+        var s = v.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return (round2(n) < 0 ? '−' : '') + m.currency + s;
+      }
+
+      // Whole amounts read better without decimals: "£15", but "£64.80".
+      function amount(m, n) { return Number.isInteger(n) ? m.currency + n : money(m, n); }
+
+      function signed(m, n) { return (round2(n) > 0 ? '+' : '') + money(m, n); }
+
+      function bottlePrice(m, listingOn) {
+        return round2(listingOn ? m.listPrice - m.credit : m.listPrice);
+      }
+
+      // The credit comes off the NEXT order, so today's invoice is always at list price.
+      function offer(m, s) {
+        var cases = Math.max(1, Math.round(s.cases));
+        var bottles = cases * m.caseSize;
+        var price = bottlePrice(m, s.listingOn);
+        var invoiceExVat = round2(bottles * m.listPrice);
+        var vat = round2(invoiceExVat * s.vatRate / 100);
+        var credit = s.listingOn ? round2(bottles * m.credit) : 0;
+        return {
+          cases: cases,
+          bottles: bottles,
+          price: price,
+          casePrice: round2(price * m.caseSize),
+          savingPerCase: s.listingOn ? round2(m.credit * m.caseSize) : 0,
+          invoiceExVat: invoiceExVat,
+          vat: vat,
+          invoiceIncVat: round2(invoiceExVat + vat),
+          credit: credit,
+          possibleCredit: round2(bottles * m.credit),
+          net: round2(invoiceExVat - credit)
+        };
+      }
+
+      function tier(m, premiumCocktail) {
+        for (var i = 0; i < m.ladder.length; i++) {
+          if (premiumCocktail >= m.ladder[i].from) return m.ladder[i];
+        }
+        return m.ladder[m.ladder.length - 1];
+      }
+
+      function recommended(m, premiumCocktail) {
+        return Math.max(round2(premiumCocktail + tier(m, premiumCocktail).uplift), m.floor);
+      }
+
+      function serves(m, pourMl) { return m.bottleMl / pourMl; }
+
+      function side(menuPrice, bottleCost, n, vatFactor) {
+        var net = menuPrice / vatFactor;
+        var cost = bottleCost / n;
+        return {
+          menuPrice: menuPrice,
+          bottleCost: bottleCost,
+          cost: round2(cost),
+          gross: round2(net - cost),
+          grossBottle: round2((net - cost) * n),
+          rawGross: net - cost
+        };
+      }
+
+      // Menu prices include VAT, bottle costs do not: strip VAT before comparing.
+      function margin(m, s) {
+        var n = serves(m, s.pourMl);
+        var vatFactor = 1 + s.vatRate / 100;
+        var ymBottle = bottlePrice(m, s.listingOn);
+        var ym = side(s.ymMenuPrice, ymBottle, n, vatFactor);
+        var pp = side(s.premiumCocktail, s.premiumBottle, n, vatFactor);
+        return {
+          serves: n,
+          ym: ym,
+          pp: pp,
+          deltaCocktail: round2(ym.gross - pp.gross),
+          deltaBottle: round2(ym.grossBottle - pp.grossBottle),
+          breakEven: round2((pp.rawGross + ymBottle / n) * vatFactor)
+        };
+      }
+
+      function pourLabel(m, ml) { return m.pourUnit === 'cl' ? (ml / 10) + ' cl' : ml + ' ml'; }
+
+      function servesLabel(n) { return (Math.round(n * 10) / 10) + ' serves'; }
+
+      function offerText(m, s) {
+        var o = offer(m, s);
+        var lines = [
+          'You & Me Vodka, ' + m.short + ' venue pricing (ex VAT)',
+          '',
+          m.bottleLabel + ' bottle, list price: ' + money(m, m.listPrice),
+          'With menu listing + bottle return: ' + money(m, bottlePrice(m, true)) +
+            ' (' + amount(m, m.credit) + ' credit per bottle)'
+        ];
+        if (m.returnOnlyCredit) {
+          lines.push('With bottle return only: ' + money(m, m.listPrice - m.returnOnlyCredit) +
+            ' (' + amount(m, m.returnOnlyCredit) + ' credit per bottle)');
+        }
+        lines.push('');
+        lines.push('Example: ' + o.cases + (o.cases === 1 ? ' case' : ' cases') + ' (' + o.bottles + ' bottles)');
+        lines.push('Invoice today: ' + money(m, o.invoiceExVat) + ' ex VAT, ' +
+          money(m, o.invoiceIncVat) + ' inc ' + s.vatRate + '% VAT');
+        if (s.listingOn) {
+          lines.push('Credit on your next order: ' + money(m, o.credit));
+          lines.push('Net cost: ' + money(m, o.net));
+        }
+        lines.push('');
+        lines.push('The credit applies to your next order when a You & Me cocktail is on your menu ' +
+          'and the bottles are returned intact.');
+        return lines.join('\n');
+      }
+
+      return {
+        round2: round2, money: money, amount: amount, signed: signed,
+        bottlePrice: bottlePrice, offer: offer, tier: tier, recommended: recommended,
+        serves: serves, margin: margin, pourLabel: pourLabel, servesLabel: servesLabel,
+        offerText: offerText
+      };
+    })();
+  </script>
+
+  <script id="ym-app">
+    (function () {
+      'use strict';
+
+      var M = JSON.parse(document.getElementById('ym-config').textContent);
+      var $ = function (id) { return document.getElementById(id); };
+      var money = function (n) { return YM.money(M, n); };
+      var amount = function (n) { return YM.amount(M, n); };
+      var setText = function (id, text) { $(id).textContent = text; };
+
+      var state = {
+        listingOn: true,
+        cases: M.defaults.cases,
+        vatRate: M.vatRate,
+        pourMl: M.defaultPour,
+        premiumCocktail: M.defaults.premiumCocktail,
+        premiumBottle: M.defaults.premiumBottle,
+        ymMenuPrice: YM.recommended(M, M.defaults.premiumCocktail),
+        menuAuto: true
+      };
+
+      // Accepts "18,5" as well as "18.5".
+      function parseNum(value) {
+        var n = parseFloat(String(value).replace(',', '.'));
+        return isFinite(n) && n >= 0 ? n : 0;
+      }
+
+      function el(tag, className, text) {
+        var node = document.createElement(tag);
+        if (className) node.className = className;
+        if (text !== undefined) node.textContent = text;
+        return node;
+      }
+
+      function ruleCard(number, title, detail) {
+        var card = el('div', 'rule-card');
+        card.appendChild(el('div', 'rule-number', String(number)));
+        var body = el('div');
+        body.appendChild(el('div', 'rule-text', title));
+        body.appendChild(el('div', 'rule-detail', detail));
+        card.appendChild(body);
+        return card;
+      }
+
+      // Parts of the page that never change after load.
+      function buildStatic() {
+        var listing = YM.bottlePrice(M, true);
+
+        setText('priceList', money(M.listPrice));
+        setText('priceCredit', money(listing));
+        setText('casesLabel', 'Cases (' + M.caseSize + ' bottles each)');
+
+        if (M.vatEditable) $('vatGroup').classList.remove('hidden');
+
+        M.pours.forEach(function (ml) {
+          var btn = el('button', 'btn-option', YM.pourLabel(M, ml));
+          btn.type = 'button';
+          btn.dataset.pour = String(ml);
+          btn.addEventListener('click', function () { state.pourMl = ml; render(); });
+          $('pourGroup').appendChild(btn);
+        });
+
+        // Ladder, lowest tier first.
+        var tiers = M.ladder.slice().reverse();
+        tiers.forEach(function (t, i) {
+          var next = tiers[i + 1];
+          var range;
+          if (i === 0) range = 'Premium pour under ' + amount(next.from);
+          else if (next) range = 'Premium pour ' + amount(t.from) + ' to ' + money(next.from - 0.01);
+          else range = 'Premium pour ' + amount(t.from) + ' and above';
+          var card = el('div', 'tier-card');
+          card.dataset.from = String(t.from);
+          var text = el('div');
+          text.appendChild(el('div', 'tier-name', t.name));
+          text.appendChild(el('div', 'tier-range', range));
+          card.appendChild(text);
+          card.appendChild(el('div', 'tier-uplift display', '+' + amount(t.uplift)));
+          $('ladder').appendChild(card);
+        });
+
+        setText('floorNote', 'We recommend ' + money(M.floor) + ' or more for a You & Me cocktail.');
+
+        setText('howTitle', 'How the ' + amount(M.credit) + ' credit works');
+        var steps = [
+          ['List a You & Me cocktail on your menu', 'By name, so your guests can ask for it.'],
+          ['Send us a photo of the menu', 'A photo or a screenshot is all we need.'],
+          ['Return the empty bottles intact', 'Each bottle you return counts.'],
+          [amount(M.credit) + ' per bottle comes off your next order',
+            money(M.listPrice) + ' becomes ' + money(listing) + '.'],
+          ['Stay on the menu, keep the price',
+            'If the cocktail comes off the menu, the list price of ' + money(M.listPrice) + ' applies.']
+        ];
+        steps.forEach(function (s, i) { $('howSteps').appendChild(ruleCard(i + 1, s[0], s[1])); });
+
+        var lowest = tiers[0].uplift;
+        var highest = tiers[tiers.length - 1].uplift;
+        var facts = [
+          ['Prices exclude VAT', M.bottleLabel + ' bottle, ' + M.caseSize + ' bottles per case.'],
+          ['Recommended menu price',
+            'One step above your premium pour: +' + amount(lowest) + ' to +' + amount(highest) +
+            ', from ' + money(M.floor) + '.']
+        ];
+        if (M.returnOnlyCredit) {
+          facts.push(['Bottle return on its own',
+            'Without a menu listing, returned bottles earn a ' + amount(M.returnOnlyCredit) +
+            ' credit: ' + money(M.listPrice - M.returnOnlyCredit) + ' per bottle.']);
+        }
+        facts.forEach(function (f) { $('howFacts').appendChild(ruleCard('i', f[0], f[1])); });
+      }
+
+      function render() {
+        var on = state.listingOn;
+        var price = YM.bottlePrice(M, on);
+        var o = YM.offer(M, state);
+
+        // The button
+        var toggle = $('listingToggle');
+        toggle.classList.toggle('on', on);
+        toggle.setAttribute('aria-checked', String(on));
+        setText('toggleState', on ? 'On ·' : 'Off ·');
+        setText('togglePrice', money(price));
+        setText('toggleHint', on ? 'per bottle, ' + amount(M.credit) + ' credit' : 'per bottle, list price');
+
+        // Offer
+        $('cardCredit').classList.toggle('active', on);
+        $('cardCredit').setAttribute('aria-pressed', String(on));
+        $('cardList').classList.toggle('active', !on);
+        $('cardList').setAttribute('aria-pressed', String(!on));
+        setText('savingLine', on
+          ? 'You save ' + amount(M.credit) + ' per bottle. A case of ' + M.caseSize + ' costs ' +
+            money(o.casePrice) + ', ' + money(o.savingPerCase) + ' less than list.'
+          : 'A case of ' + M.caseSize + ' costs ' + money(o.casePrice) + '. Switch on menu listing + ' +
+            'bottle return to save ' + amount(M.credit) + ' per bottle.');
+
+        setText('oBottles', String(o.bottles));
+        setText('oInvoice', money(o.invoiceExVat));
+        setText('oVatLabel', 'VAT ' + state.vatRate + '%');
+        setText('oVat', money(o.vat));
+        setText('oTotal', money(o.invoiceIncVat));
+        setText('oCredit', money(o.credit));
+        $('oCreditLine').className = 'line ' + (on ? 'credit' : 'muted');
+        setText('oNet', money(o.net));
+
+        var note;
+        if (on) {
+          note = 'That is ' + money(price) + ' per bottle. The ' + amount(M.credit) + ' credit per bottle ' +
+            'comes off your next order, once a You & Me cocktail is on your menu and the bottles are ' +
+            'returned intact.';
+        } else {
+          note = 'That is ' + money(price) + ' per bottle, the list price. With menu listing + bottle ' +
+            'return, this order earns a ' + money(o.possibleCredit) + ' credit towards the next one.';
+          if (M.returnOnlyCredit) {
+            note += ' Bottle return on its own earns a ' + amount(M.returnOnlyCredit) +
+              ' credit per bottle (' + money(M.listPrice - M.returnOnlyCredit) + ').';
+          }
+        }
+        setText('orderNote', note);
+
+        // Menu price
+        var t = YM.tier(M, state.premiumCocktail);
+        var rec = YM.recommended(M, state.premiumCocktail);
+        if (state.menuAuto) state.ymMenuPrice = rec;
+        if (state.menuAuto && document.activeElement !== $('ymMenuPrice')) {
+          $('ymMenuPrice').value = String(rec);
+        }
+        $('useRecommended').classList.toggle('hidden', state.menuAuto);
+
+        setText('recPrice', money(rec));
+        setText('recDetail', state.premiumCocktail + t.uplift >= M.floor
+          ? 'Your premium pour ' + money(state.premiumCocktail) + ' + ' + amount(t.uplift)
+          : 'Our recommended minimum for a You & Me cocktail');
+
+        var onTarget = state.ymMenuPrice >= rec;
+        $('menuStatus').className = 'status-box area-status ' + (onTarget ? 'ok' : 'warn');
+        setText('menuStatusTitle', onTarget ? 'On target' : 'Below our recommendation');
+        setText('menuStatusDetail', onTarget
+          ? 'At or above the recommended ' + money(rec)
+          : 'We recommend ' + money(rec) + ' or more');
+
+        Array.prototype.forEach.call($('pourGroup').children, function (btn) {
+          btn.classList.toggle('active', Number(btn.dataset.pour) === state.pourMl);
+        });
+        Array.prototype.forEach.call($('ladder').children, function (card) {
+          card.classList.toggle('active', Number(card.dataset.from) === t.from);
+        });
+
+        // Margin
+        var g = YM.margin(M, state);
+        setText('pourNote', YM.servesLabel(g.serves) + ' per ' + M.bottleLabel + ' bottle');
+        setText('marginInputs', 'Based on menu prices of ' + money(state.ymMenuPrice) + ' (You & Me) and ' +
+          money(state.premiumCocktail) + ' (premium pour), with a ' + YM.pourLabel(M, state.pourMl) + ' pour.');
+
+        setText('ymMenu', money(g.ym.menuPrice));
+        setText('ymBottle', money(g.ym.bottleCost));
+        setText('ymCost', money(g.ym.cost));
+        setText('ymGross', money(g.ym.gross));
+        setText('ymGrossBottle', money(g.ym.grossBottle));
+        setText('ppMenu', money(g.pp.menuPrice));
+        setText('ppBottle', money(g.pp.bottleCost));
+        setText('ppCost', money(g.pp.cost));
+        setText('ppGross', money(g.pp.gross));
+        setText('ppGrossBottle', money(g.pp.grossBottle));
+
+        var ahead = g.deltaCocktail > 0;
+        $('deltaBox').className = 'delta-box ' + (ahead ? 'positive' : 'negative');
+        setText('deltaCocktail', YM.signed(M, g.deltaCocktail));
+        setText('deltaBottle', YM.signed(M, g.deltaBottle));
+        var summary;
+        if (ahead) {
+          summary = 'You earn ' + money(g.deltaCocktail) + ' more per cocktail and ' +
+            money(g.deltaBottle) + ' more per bottle with You & Me than with your premium pour.';
+        } else {
+          summary = 'At this menu price, You & Me does not yet earn you more than your premium pour. ' +
+            'It does above ' + money(g.breakEven) + ' on the menu.';
+          if (!on) summary += ' Switching on menu listing + bottle return also lifts your margin.';
+        }
+        setText('deltaSummary', summary);
+      }
+
+      function showTab(name) {
+        if (!$('tab-' + name)) return;
+        Array.prototype.forEach.call(document.querySelectorAll('.tab-btn'), function (btn) {
+          btn.classList.toggle('active', btn.dataset.tab === name);
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('.tab-content'), function (panel) {
+          panel.classList.toggle('active', panel.id === 'tab-' + name);
+        });
+        // Start each tab at its top, without jumping back up to the logo.
+        // (The bar's resting place is just below the header; its own offsetTop moves while it is pinned.)
+        var barTop = document.querySelector('header').offsetHeight;
+        if (window.scrollY > barTop) window.scrollTo(0, barTop);
+      }
+
+      function setListing(on) {
+        state.listingOn = on;
+        render();
+      }
+
+      function setCases(n) {
+        state.cases = Math.min(999, Math.max(1, Math.round(n) || 1));
+        $('cases').value = String(state.cases);
+        render();
+      }
+
+      function copyOffer() {
+        var text = YM.offerText(M, state);
+        var done = function () {
+          setText('copyBtn', 'Copied');
+          setTimeout(function () { setText('copyBtn', 'Copy offer'); }, 1800);
+        };
+        var fallback = function () {
+          var area = el('textarea');
+          area.value = text;
+          area.setAttribute('readonly', '');
+          area.style.position = 'fixed';
+          area.style.opacity = '0';
+          document.body.appendChild(area);
+          area.select();
+          var copied = false;
+          try { copied = document.execCommand('copy'); } catch (e) { copied = false; }
+          document.body.removeChild(area);
+          if (copied) done(); else setText('copyBtn', 'Copy not available');
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else {
+          fallback();
+        }
+      }
+
+      // Optional start state from the address, e.g. #listing=off&cases=3&tab=margin
+      function applyHash() {
+        var hash = window.location.hash.replace(/^#/, '');
+        if (!hash) return;
+        hash.split('&').forEach(function (pair) {
+          var parts = pair.split('=');
+          var key = parts[0];
+          var value = decodeURIComponent(parts[1] || '');
+          if (key === 'listing') state.listingOn = value !== 'off';
+          if (key === 'cases') state.cases = Math.min(999, Math.max(1, Math.round(parseNum(value)) || 1));
+          if (key === 'pour' && M.pours.indexOf(Number(value)) !== -1) state.pourMl = Number(value);
+          if (key === 'tab') showTab(value);
+        });
+      }
+
+      // Each listener is registered exactly once.
+      function wire() {
+        $('listingToggle').addEventListener('click', function () { setListing(!state.listingOn); });
+        $('cardList').addEventListener('click', function () { setListing(false); });
+        $('cardCredit').addEventListener('click', function () { setListing(true); });
+
+        Array.prototype.forEach.call(document.querySelectorAll('.tab-btn'), function (btn) {
+          btn.addEventListener('click', function () { showTab(btn.dataset.tab); });
+        });
+        $('editMenuPrices').addEventListener('click', function () { showTab('menu'); });
+
+        $('casesMinus').addEventListener('click', function () { setCases(state.cases - 1); });
+        $('casesPlus').addEventListener('click', function () { setCases(state.cases + 1); });
+        $('cases').addEventListener('change', function (e) { setCases(parseNum(e.target.value)); });
+
+        $('vatRate').addEventListener('input', function (e) {
+          state.vatRate = Math.min(30, parseNum(e.target.value));
+          render();
+        });
+
+        $('premiumCocktail').addEventListener('input', function (e) {
+          state.premiumCocktail = parseNum(e.target.value);
+          render();
+        });
+
+        $('ymMenuPrice').addEventListener('input', function (e) {
+          state.ymMenuPrice = parseNum(e.target.value);
+          state.menuAuto = false;
+          render();
+        });
+
+        $('useRecommended').addEventListener('click', function () {
+          state.menuAuto = true;
+          render();
+        });
+
+        $('premiumBottle').addEventListener('input', function (e) {
+          state.premiumBottle = parseNum(e.target.value);
+          render();
+        });
+
+        // Tap a field and type: the old value is selected, so there is nothing to delete first.
+        // The keyboard's Done key closes the keyboard.
+        Array.prototype.forEach.call(document.querySelectorAll('input.num'), function (input) {
+          input.addEventListener('focus', function () {
+            setTimeout(function () { if (document.activeElement === input) input.select(); }, 0);
+          });
+          input.addEventListener('keydown', function (e) { if (e.key === 'Enter') input.blur(); });
+        });
+
+        $('copyBtn').addEventListener('click', copyOffer);
+      }
+
+      buildStatic();
+      applyHash();
+      $('cases').value = String(state.cases);
+      $('vatRate').value = String(state.vatRate);
+      $('premiumCocktail').value = String(state.premiumCocktail);
+      $('premiumBottle').value = String(state.premiumBottle);
+      $('ymMenuPrice').value = String(state.ymMenuPrice);
+      wire();
+      render();
+    })();
+  </script>
+</body>
+</html>
